@@ -1,0 +1,57 @@
+# Compiled binaries
+bin/
+obj/
+
+# NuGet packages
+*.nupkg
+packages/
+
+# User-specific files
+*.suo
+*.user
+*.userprefs
+*.usertasks
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+# Visual Studio files
+*.VisualState.xml
+.vs/
+*_i.c
+*_p.c
+*_i.h
+*.ilk
+*.meta
+*.obj
+*.pch
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.log
+*.vspscc
+*.vssscc
+.builds
+
+# Resharper
+_ReSharper*/
+*.ReSharper*
+*.DotSettings.user
+
+# Rider
+.idea/
+*.sln.iml
+
+# Build and publish output
+**/bin/
+**/obj/
