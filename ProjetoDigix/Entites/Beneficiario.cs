@@ -23,7 +23,7 @@ namespace ProjetoDigix.Entities
             {
                 pontuacao += 5;
             }
-            else if (rendaTotal <= 1500)
+            else if (rendaTotal > 900 && rendaTotal <= 1500)
             {
                 pontuacao += 3;
             }
@@ -32,7 +32,7 @@ namespace ProjetoDigix.Entities
             {
                 pontuacao += 3;
             }
-            else if (numeroDependentes >= 1)
+            else if (numeroDependentes >= 1 && numeroDependentes < 3)
             {
                 pontuacao += 2;
             }
