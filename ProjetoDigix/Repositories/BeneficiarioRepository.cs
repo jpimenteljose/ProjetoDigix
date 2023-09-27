@@ -82,5 +82,23 @@ namespace ProjetoDigix.Repositories
             }
 
         }
+
+        // Método para varificar a pontuação dos BENEFICIÁRIOs de acordo com os critérios estabelecidos
+        public List<Beneficiario> ConsultarPontuacaoBeneficiario()
+        {
+            var query = @"SELECT B.CPF, B.NOME, B.SALARIO AS RENDATOTAL, COUNT(D.DATANASCIMENTO) AS NUMERODEPENDENTES
+                          FROM BENEFICIARIO B, DEPENDENTE D
+                          WHERE B.IDBENEFICIARIO = D.IDBENEFICIARIO
+                          AND   DATEDIFF(YY, D.DATANASCIMENTO, GETDATE()) <= 18
+                          GROUP BY B.CPF, B.NOME, B.SALARIO
+                          ORDER BY B.CPF
+                        ";
+
+            using (var connection = new SqlConnection(SqlServerSettings.GetConnectionString()))
+            {
+                return connection.Query<Beneficiario>(query).ToList();
+            }
+        }
+
     }
 }

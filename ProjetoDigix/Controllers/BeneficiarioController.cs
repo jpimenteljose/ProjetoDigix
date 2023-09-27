@@ -1,7 +1,10 @@
-﻿using ProjetoDigix.Entities;
+﻿using Dapper;
+using ProjetoDigix.Entities;
 using ProjetoDigix.Repositories;
+using ProjetoDigix.Settings;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +19,7 @@ namespace ProjetoDigix.Controllers
             Console.WriteLine("\n*** CONTROLE DE BENEFICIÁRIOS ***\n");
             Console.WriteLine("(1) - CADASTRAR BENEFICIÁRIO");
             Console.WriteLine("(2) - CONSULTAR BENEFICIÁRIO");
+            Console.WriteLine("(3) - CONSULTAR PONTUAÇÃO DE BENEFICIÁRIO");
 
             try
             {
@@ -25,7 +29,8 @@ namespace ProjetoDigix.Controllers
                 switch (opcao)
                 {
                     case 1: CadastrarBeneficiario(); break;
-                     case 2: ConsultarBeneficiario(); break;
+                    case 2: ConsultarBeneficiario(); break;
+                    case 3: ConsultarPontuacao(); break;
                     default:
                         Console.WriteLine("\nOPÇÃO INVÁLIDA.");
                         break;
@@ -112,7 +117,7 @@ namespace ProjetoDigix.Controllers
                 {
                     Console.WriteLine("ID...........: " + item.IdBeneficiario);
                     Console.WriteLine("NOME.........: " + item.Nome);
-                    Console.WriteLine("CPF..........: " + item.Cpf);
+                    Console.WriteLine("CPF..........: " + FormatarCPF(item.Cpf));
                     Console.WriteLine("SALARIO......: " + item.Salario);
                     Console.WriteLine("...");
                 }
@@ -124,10 +129,49 @@ namespace ProjetoDigix.Controllers
             }
         }
 
-        // Método para varificar as BENEFICIÁRIOs aptas a ganhar a casa de acordo com os critérios estabelecidos
-        public void ContemplarBeneficiario()
+        // Método para consultar e listar a pontuação dos Beneficiários
+        public void ConsultarPontuacao()
         {
+            try
+            {
+                Console.WriteLine("\nCONSULTA PONTUAÇÃO DE FAMÍLIA: ");
 
+                var beneficiarioRepository = new BeneficiarioRepository();
+                var Beneficiarios = beneficiarioRepository.ConsultarPontuacaoBeneficiario();
+
+                // Veririca a pontuação conforme critérios definidos
+                Beneficiarios.Sort((f2, f3) => f3.CalcularPontuacao().CompareTo(f2.CalcularPontuacao()));
+
+                foreach (var item in Beneficiarios)
+                {
+                    Console.WriteLine("BENEFICIARIO.: " + item.Nome);
+                    Console.WriteLine("CPF..........: " + FormatarCPF(item.Cpf));
+                    Console.WriteLine("RENDA........: " + item.rendaTotal);
+                    Console.WriteLine("DEPENDENTES..: " + item.numeroDependentes);
+                    Console.WriteLine("PONTUAÇÃO....: " + item.CalcularPontuacao());
+                    Console.WriteLine("...");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("\nFalha ao consultar Pontuação das Famílias.");
+                Console.WriteLine(e.Message);
+            }
         }
+
+
+        // Métodp para formatar o CPF
+        public static string FormatarCPF(string cpf)
+        {
+            // Verifique se o CPF possui 11 caracteres
+            if (cpf.Length != 11)
+            {
+                throw new ArgumentException("CPF deve conter 11 dígitos.");
+            }
+
+            // Aplica a máscara do CPF (XXX.XXX.XXX-XX)
+            return cpf.Insert(3, ".").Insert(7, ".").Insert(11, "-");
+        }
+
     }
 }
